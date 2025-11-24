@@ -56,7 +56,6 @@ export default function Cuestionario() {
         await insertarRespuesta({
           idpregunta: pregunta.idpregunta,
           idopcion: null,
-          descripcion: null,
           fotourl: url,
           nombreencuestado: nombre,
           fecha: new Date(),
