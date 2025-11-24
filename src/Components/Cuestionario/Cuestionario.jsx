@@ -39,61 +39,64 @@ export default function Cuestionario() {
   }, [index, preguntas]);
 
   const handleNext = async (respuestaSeleccionada) => {
-  try {
-    const pregunta = preguntas[index];
+    try {
+      const pregunta = preguntas[index];
 
-    // FOTO
-    if (pregunta.tipopregunta === "foto") {
-      const fotoFile = respuestaSeleccionada;
-      const url = await subirFoto(fotoFile, nombre);
+      // FOTO
+      if (pregunta.tipopregunta === "foto") {
+        const fotoFile = respuestaSeleccionada;
 
-      if (!url) {
-        alert("Error subiendo foto.");
-        return;
-      }
+        const url = await subirFoto(fotoFile, nombre);
 
-      await insertarRespuesta({
-        idpregunta: pregunta.idpregunta,
-        idopcion: null,
-        descripcion: null,
-        fotourl: url,
-        nombreencuestado: nombre,
-        fecha: new Date(),
-      });
+        if (!url) {
+          alert("Error subiendo foto.");
+          return;
+        }
 
-    } else if (Array.isArray(respuestaSeleccionada)) {
-      // MULTIPLE
-      for (let idopcion of respuestaSeleccionada) {
         await insertarRespuesta({
           idpregunta: pregunta.idpregunta,
-          idopcion,
+          idopcion: null,
+          descripcion: null,
+          fotourl: url,
           nombreencuestado: nombre,
           fecha: new Date(),
         });
       }
-    } else {
-      // UNICA
-      await insertarRespuesta({
-        idpregunta: pregunta.idpregunta,
-        idopcion: respuestaSeleccionada,
-        nombreencuestado: nombre,
-        fecha: new Date(),
-      });
-    }
 
-    // AVANZAR O FINALIZAR
-    if (index + 1 >= preguntas.length) {
-      navigate("/gracias");
-      return;
-    }
+      // MULTIPLE
+      else if (Array.isArray(respuestaSeleccionada)) {
+        for (let idopcion of respuestaSeleccionada) {
+          await insertarRespuesta({
+            idpregunta: pregunta.idpregunta,
+            idopcion,
+            nombreencuestado: nombre,
+            fecha: new Date(),
+          });
+        }
+      }
 
-    setIndex(index + 1);
+      // ÚNICA
+      else {
+        await insertarRespuesta({
+          idpregunta: pregunta.idpregunta,
+          idopcion: respuestaSeleccionada,
+          nombreencuestado: nombre,
+          fecha: new Date(),
+        });
+      }
 
-    } catch (error) {
-      console.error("Error guardando respuesta:", error);
-      alert("Ocurrió un error guardando la respuesta.");
-    }
-  };
+      // ***** NAVEGACIÓN FINAL *****
+      if (index + 1 >= preguntas.length) {
+        navigate("/gracias");
+      } else {
+        setIndex(index + 1);
+      }
+
+      } catch (error) {
+        console.error("Error guardando respuesta:", error);
+        alert("Ocurrió un error guardando la respuesta.");
+      }
+    };
 
 
   if (!preguntas.length) return <p>Cargando...</p>;
