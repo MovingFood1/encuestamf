@@ -20,7 +20,14 @@ export default function CuestionarioFoto({ onNext, disabled }) {
     try {
       setCamaraActiva(true);
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "environment" }
+        video: {
+          // "ideal" le dice al navegador que intente usar la trasera primero
+          facingMode: { ideal: "environment" },
+          // Añadir resolución ayuda a que no se vea borroso
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
+        audio: false
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
