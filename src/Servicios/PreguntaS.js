@@ -4,7 +4,8 @@ import { supabase } from "./Supabase";
 export async function getPreguntas() {
   const { data, error } = await supabase
     .from("pregunta")
-    .select("idpregunta, tipopregunta, descripcion");
+    .select("idpregunta, tipopregunta, descripcion")
+    .order("idpregunta", { ascending: true });
 
   if (error) throw error;
   return data;
@@ -15,7 +16,8 @@ export async function getOpciones(idpregunta) {
   const { data, error } = await supabase
     .from("tiporespuesta")
     .select("idopcion, idpregunta, descripcion")
-    .eq("idpregunta", idpregunta);
+    .eq("idpregunta", idpregunta)
+    .order("idopcion", { ascending: true });
 
   if (error) throw error;
   return data;

@@ -1,22 +1,16 @@
-import { useState } from "react";
-
-export default function CuestionarioUnico({ opciones, onNext }) {
-  const [seleccion, setSeleccion] = useState(null);
+export default function CuestionarioUnico({ opciones, onNext, currentValue }) {
 
   return (
-    <div>
-      {opciones.map(op => (
-        <label key={op.idopcion}>
-          <input
-            type="radio"
-            name="unica"
-            onChange={() => setSeleccion(op.idopcion)}
-          />
+    <div className="opciones-grid">
+      {opciones.map((op) => (
+        <div
+          key={op.idopcion}
+          className={`opcion-card ${currentValue === op.idopcion ? "seleccionada" : ""}`}
+          onClick={() => onNext(op.idopcion)}
+        >
           {op.descripcion}
-        </label>
+        </div>
       ))}
-
-      <button onClick={() => onNext(seleccion)}>Siguiente</button>
     </div>
   );
 }

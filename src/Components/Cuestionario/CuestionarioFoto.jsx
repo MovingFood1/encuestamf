@@ -6,85 +6,85 @@ function base64ToFile(base64, fileName) {
   const bstr = atob(arr[1]);
   let n = bstr.length;
   const u8arr = new Uint8Array(n);
-
   while (n--) u8arr[n] = bstr.charCodeAt(n);
-
   return new File([u8arr], fileName, { type: mime });
 }
 
-export default function CuestionarioFoto({ onNext }) {
+export default function CuestionarioFoto({ onNext, disabled }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
-  const [foto, setFoto] = useState(null);
+  const [fotoPreview, setFotoPreview] = useState(null);
+  const [camaraActiva, setCamaraActiva] = useState(false);
 
   const iniciarCamara = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: { exact: "environment" } }
-    });
-
-    videoRef.current.srcObject = stream;
+    try {
+      setCamaraActiva(true);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" }
+      });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Error al acceder a la cámara:", err);
+      alert("No se pudo acceder a la cámara.");
+    }
   };
 
   const capturarFoto = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
-
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
-
     const ctx = canvas.getContext("2d");
     ctx.drawImage(video, 0, 0);
 
-    const imagen = canvas.toDataURL("image/jpeg");
-    setFoto(imagen);
+    const imagenBase64 = canvas.toDataURL("image/jpeg");
+    setFotoPreview(imagenBase64);
+    
+    // Detener la cámara para ahorrar batería y recursos
+    const stream = video.srcObject;
+    stream.getTracks().forEach(track => track.stop());
+    setCamaraActiva(false);
+
+    // Enviamos el archivo al componente padre inmediatamente
+    const file = base64ToFile(imagenBase64, `evidencia_${Date.now()}.jpg`);
+    onNext(file);
   };
 
-  const guardar = () => {
-    const file = base64ToFile(foto, "foto.jpg");
-    onNext(file); // AHORA SÍ ENVÍA UN FILE REAL
+  const reintentar = () => {
+    setFotoPreview(null);
+    iniciarCamara();
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h3>Toma una fotografía</h3>
-
-      {!foto && (
-        <>
-          <video
-            ref={videoRef}
-            autoPlay
-            style={{ width: "100%", borderRadius: 10, marginTop: 10 }}
-          ></video>
-
-          <button onClick={iniciarCamara} style={{ marginTop: 10 }}>
-            Activar cámara
-          </button>
-
-          <button onClick={capturarFoto} style={{ marginTop: 10 }}>
-            Capturar foto
-          </button>
-        </>
+    <div className="foto-container">
+      {!fotoPreview ? (
+        <div className="camara-wrapper">
+          {camaraActiva ? (
+            <>
+              <video ref={videoRef} autoPlay className="video-preview"></video>
+              <button className="btn-siguiente btn-capturar" onClick={capturarFoto} disabled={disabled}>
+                📸 Capturar Fotografía
+              </button>
+            </>
+          ) : (
+            <button className="btn-siguiente btn-activar" onClick={iniciarCamara} disabled={disabled}>
+              📷 Activar Cámara
+            </button>
+          )}
+        </div>
+      ) : (
+        <div className="preview-wrapper">
+          <img src={fotoPreview} alt="Vista previa" className="foto-preview-img" />
+          {!disabled && (
+            <button className="btn-reintentar" onClick={reintentar}>
+              🔄 Tomar otra foto
+            </button>
+          )}
+          {disabled && <p className="text-subiendo">Foto lista para enviar...</p>}
+        </div>
       )}
-
-      {foto && (
-        <>
-          <img
-            src={foto}
-            alt="captura"
-            style={{
-              width: "100%",
-              borderRadius: 10,
-              marginTop: 10,
-              border: "2px solid #4caf50",
-            }}
-          />
-
-          <button style={{ marginTop: 10 }} onClick={guardar}>
-            Guardar y continuar
-          </button>
-        </>
-      )}
-
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>
     </div>
   );
