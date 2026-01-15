@@ -166,3 +166,32 @@
   display: block;
   text-align: left;
 }
+
+/* Ajustes para teléfonos móviles */
+@media (max-width: 480px) {
+  .titulo-encuesta {
+    font-size: 1.5rem; /* Texto más pequeño para que no ocupe 3 líneas */
+    margin-bottom: 20px;
+  }
+
+  .cuestionario-card {
+    padding: 15px; /* Más espacio para el contenido */
+    border-radius: 8px;
+  }
+
+  .pregunta-descripcion {
+    font-size: 1.1rem; /* Ajuste de lectura */
+  }
+
+  /* Hacer que los botones sean más fáciles de tocar */
+  .btn-siguiente, .btn-finalizar {
+    padding: 18px; 
+    font-size: 1.1rem;
+  }
+
+  /* En móviles, las opciones deben ser grandes */
+  .opcion-card {
+    padding: 18px;
+    font-size: 1rem;
+  }
+}

@@ -41,6 +41,9 @@ export default function CuestionarioFoto({ onNext, disabled }) {
   const capturarFoto = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
+    
+    if (!video || !canvas) return; // Validación de seguridad
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     const ctx = canvas.getContext("2d");
@@ -49,12 +52,16 @@ export default function CuestionarioFoto({ onNext, disabled }) {
     const imagenBase64 = canvas.toDataURL("image/jpeg");
     setFotoPreview(imagenBase64);
     
-    // Detener la cámara para ahorrar batería y recursos
+    // Detener la cámara de forma segura
     const stream = video.srcObject;
-    stream.getTracks().forEach(track => track.stop());
+    if (stream) {
+      const tracks = stream.getTracks();
+      tracks.forEach(track => track.stop());
+    }
+    
     setCamaraActiva(false);
 
-    // Enviamos el archivo al componente padre inmediatamente
+    // Enviamos el archivo al componente padre
     const file = base64ToFile(imagenBase64, `evidencia_${Date.now()}.jpg`);
     onNext(file);
   };
