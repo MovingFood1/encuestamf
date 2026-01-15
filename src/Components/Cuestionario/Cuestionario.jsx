@@ -118,7 +118,7 @@ export default function Cuestionario() {
         const valor = respuestasValues[p.idpregunta];
         let urlFoto = null;
 
-        if (p.tipopregunta === "foto") {
+        if (p.tipopregunta === "foto" && valor) {
           urlFoto = await subirFoto(valor, nombre);
           await insertarRespuesta({ idpregunta: p.idpregunta, fotourl: urlFoto, nombreencuestado: nombre, fecha: new Date() });
         } else if (p.tipopregunta === "texto") {
@@ -139,7 +139,7 @@ export default function Cuestionario() {
       navigate("/gracias");
     } catch (error) {
       console.error(error);
-      alert("Error al enviar la encuesta");
+      alert("Error al enviar la encuesta" + error.message);
     } finally {
       setIsProcessing(false);
     }
