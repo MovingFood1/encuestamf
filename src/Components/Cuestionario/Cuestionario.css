@@ -123,7 +123,7 @@
   border-radius: 8px;
   outline: none;
   transition: border-color 0.3s ease;
-  box-sizing: border-box; /* Para que el padding no ensanche el input */
+  box-sizing: border-box;
 }
 
 /* Color cuando el usuario hace clic para escribir */
@@ -138,8 +138,8 @@
 }
 
 .section-pregunta {
-  margin-bottom: 20px; /* Espacio entre cada pregunta */
-  text-align: left;    /* Mejor alineación para leer hacia abajo */
+  margin-bottom: 20px;
+  text-align: left;
 }
 
 .titulo-encuesta {
@@ -155,7 +155,7 @@
 }
 
 .input-error {
-  border-color: #e74c3c !important; /* Rojo */
+  border-color: #e74c3c !important;
   background-color: #fdf2f2;
 }
 
@@ -170,17 +170,17 @@
 /* Ajustes para teléfonos móviles */
 @media (max-width: 480px) {
   .titulo-encuesta {
-    font-size: 1.5rem; /* Texto más pequeño para que no ocupe 3 líneas */
+    font-size: 1.5rem;
     margin-bottom: 20px;
   }
 
   .cuestionario-card {
-    padding: 15px; /* Más espacio para el contenido */
+    padding: 15px;
     border-radius: 8px;
   }
 
   .pregunta-descripcion {
-    font-size: 1.1rem; /* Ajuste de lectura */
+    font-size: 1.1rem;
   }
 
   /* Hacer que los botones sean más fáciles de tocar */
@@ -189,9 +189,36 @@
     font-size: 1.1rem;
   }
 
-  /* En móviles, las opciones deben ser grandes */
   .opcion-card {
     padding: 18px;
     font-size: 1rem;
   }
+}
+
+.vendedor-list-container {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 5px;
+  margin-top: 20px;
+}
+
+.vendedor-list-container::-webkit-scrollbar {
+  width: 6px;
+}
+.vendedor-list-container::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+.vendedor-badge {
+  background-color: #e8f4fd;
+  color: #2980b9;
+  padding: 10px 20px;
+  border-radius: 50px;
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  border: 1px solid #d1e9f9;
+  width: auto;
+  align-self: center;
 }

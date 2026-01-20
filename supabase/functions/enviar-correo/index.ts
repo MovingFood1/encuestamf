@@ -1,4 +1,3 @@
-// No necesitamos imports externos para Deno.serve moderno
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -14,6 +13,18 @@ Deno.serve(async (req) => {
   try {
     const payload = await req.json();
     const { email, nombreSupervisor, encuestado, respuestas } = payload;
+
+    if (!email || !respuestas) {
+      throw new Error("Faltan datos requeridos (email o respuestas)");
+    }
+
+    const respuestaRazonSocial = respuestas.find((r: any) => 
+      r.pregunta.toLowerCase().includes("razón social") || 
+      r.pregunta.toLowerCase().includes("razon social")
+    );
+    
+    // Si la encuentra usa el valor, si no, usa un texto por defecto
+    const razonSocial = respuestaRazonSocial ? respuestaRazonSocial.respuesta : "Nuevo Cliente";
 
     // 1. Procesar Textos
     const listaTextoHtml = respuestas
@@ -40,16 +51,14 @@ Deno.serve(async (req) => {
         Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
-        from: "Reporte <onboarding@resend.dev>",
+        from: "CREACIÓN CLIENTE <onboarding@resend.dev>",
         to: [email],
-        subject: `Informe de Encuesta: ${encuestado}`,
+        subject: `Creación de cliente - ${razonSocial}`,
         html: `
           <div style="font-family: sans-serif; color: #333;">
-            <h2>Resumen de Encuesta</h2>
-            <p>Hola <strong>${nombreSupervisor}</strong>, el usuario <strong>${encuestado}</strong> ha enviado información:</p>
-            <h3>Respuestas:</h3>
+            <p>Estimado <strong>${nombreSupervisor}</strong>, le informamos que <strong>${encuestado}</strong> solicita aprobación para crear al siguiente cliente:</p>
             <ul>${listaTextoHtml}</ul>
-            <h3>Evidencia Fotográfica:</h3>
+            <h3>Imágenes:</h3>
             ${listaFotosHtml || "<p>No se adjuntaron fotos.</p>"}
           </div>
         `,
@@ -64,7 +73,7 @@ Deno.serve(async (req) => {
     });
 
   } catch (error) {
-    // Si llegamos aquí, devolvemos el error con CORS para que React pueda leerlo
+    // Devolvemos el error con CORS para que React pueda leerlo
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,

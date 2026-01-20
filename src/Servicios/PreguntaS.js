@@ -1,5 +1,19 @@
 import { supabase } from "./Supabase";
 
+// Obtener todas los vendedores
+export async function getVendedores() {
+  const { data, error } = await supabase
+    .from("vendedor")
+    .select("*")
+    .order("nombre", { ascending: true });
+
+  if (error) {
+    console.error("Error cargando vendedores:", error);
+    return [];
+  }
+  return data;
+}
+
 // Obtener todas las preguntas
 export async function getPreguntas() {
   const { data, error } = await supabase
