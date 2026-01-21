@@ -27,10 +27,24 @@ function validarRut(rut) {
 
 // Máscara para teléfono +56 9 XXXX XXXX
 const aplicarMascaraTelefono = (valor) => {
-  const num = valor.replace(/\D/g, "").slice(0, 9);
+  // 1. Quitamos todo lo que no sea número
+  let num = valor.replace(/\D/g, "");
+
+  // 2. Si el usuario empezó a escribir "569...", le quitamos el "56" 
+  // para que no se duplique, ya que el +56 lo ponemos nosotros fijos.
+  if (num.startsWith("56")) {
+    num = num.slice(2);
+  }
+
+  // 3. Limitamos a 9 dígitos máximo (el estándar móvil en Chile: 9XXXXXXXX)
+  num = num.slice(0, 9);
+
+  // 4. Vamos construyendo el formato paso a paso
   if (num.length === 0) return "";
-  if (num.length <= 1) return `+56 ${num}`;
+  if (num.length === 1) return `+56 ${num}`;
   if (num.length <= 5) return `+56 ${num.slice(0, 1)} ${num.slice(1)}`;
+  
+  // Formato final: +56 9 XXXX XXXX
   return `+56 ${num.slice(0, 1)} ${num.slice(1, 5)} ${num.slice(5)}`;
 };
 
