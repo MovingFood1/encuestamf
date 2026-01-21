@@ -222,3 +222,38 @@
   width: auto;
   align-self: center;
 }
+
+/* Contenedor principal de la foto */
+.foto-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* El wrapper de la cámara y la previsualización */
+.camara-wrapper, .preview-wrapper {
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* IMPORTANTE: Esto arregla el desborde */
+.video-preview, .foto-preview-img {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #ddd;
+  margin-bottom: 15px;
+}
+
+/* Ajuste para botones dentro de la sección foto */
+.btn-capturar, .btn-reintentar {
+  width: 100%;
+  max-width: 300px;
+}
