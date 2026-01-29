@@ -30,7 +30,7 @@
 
 /* 2. TARJETAS DE PREGUNTA */
 .cuestionario-card {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.9);
   padding: 25px;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(4,61,48,0.7);
