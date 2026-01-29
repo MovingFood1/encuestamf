@@ -21,9 +21,7 @@ export default function CuestionarioFoto({ onNext, disabled }) {
       setCamaraActiva(true);
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          // "ideal" le dice al navegador que intente usar la trasera primero
           facingMode: { ideal: "environment" },
-          // Añadir resolución ayuda a que no se vea borroso
           width: { ideal: 1280 },
           height: { ideal: 720 }
         },
@@ -35,14 +33,14 @@ export default function CuestionarioFoto({ onNext, disabled }) {
     } catch (err) {
       console.error("Error al acceder a la cámara:", err);
       alert("No se pudo acceder a la cámara.");
+      setCamaraActiva(false);
     }
   };
 
   const capturarFoto = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
-    
-    if (!video || !canvas) return; // Validación de seguridad
+    if (!video || !canvas) return;
 
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -52,16 +50,13 @@ export default function CuestionarioFoto({ onNext, disabled }) {
     const imagenBase64 = canvas.toDataURL("image/jpeg");
     setFotoPreview(imagenBase64);
     
-    // Detener la cámara de forma segura
     const stream = video.srcObject;
     if (stream) {
-      const tracks = stream.getTracks();
-      tracks.forEach(track => track.stop());
+      stream.getTracks().forEach(track => track.stop());
     }
     
     setCamaraActiva(false);
 
-    // Enviamos el archivo al componente padre
     const file = base64ToFile(imagenBase64, `evidencia_${Date.now()}.jpg`);
     onNext(file);
   };
@@ -77,14 +72,14 @@ export default function CuestionarioFoto({ onNext, disabled }) {
         <div className="camara-wrapper">
           {camaraActiva ? (
             <>
-              <video ref={videoRef} autoPlay className="video-preview"></video>
-              <button className="btn-siguiente btn-capturar" onClick={capturarFoto} disabled={disabled}>
-                📸 Capturar Fotografía
+              <video ref={videoRef} autoPlay playsInline className="video-preview"></video>
+              <button className="opcion-card activa" onClick={capturarFoto} disabled={disabled} style={{width: '100%'}}>
+                📸 CAPTURAR AHORA
               </button>
             </>
           ) : (
-            <button className="btn-siguiente btn-activar" onClick={iniciarCamara} disabled={disabled}>
-              📷 Activar Cámara
+            <button className="opcion-card" onClick={iniciarCamara} disabled={disabled} style={{width: '100%'}}>
+              📷 ACTIVAR CÁMARA
             </button>
           )}
         </div>
@@ -92,11 +87,10 @@ export default function CuestionarioFoto({ onNext, disabled }) {
         <div className="preview-wrapper">
           <img src={fotoPreview} alt="Vista previa" className="foto-preview-img" />
           {!disabled && (
-            <button className="btn-reintentar" onClick={reintentar}>
-              🔄 Tomar otra foto
+            <button className="btn-reintentar-text" onClick={reintentar}>
+              🔄 Reintentar fotografía
             </button>
           )}
-          {disabled && <p className="text-subiendo">Foto lista para enviar...</p>}
         </div>
       )}
       <canvas ref={canvasRef} style={{ display: "none" }}></canvas>

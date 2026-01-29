@@ -1,27 +1,29 @@
-import { useState } from "react";
+import React from 'react';
 
-export default function CuestionarioMultiple({ opciones, onNext }) {
-  const [seleccion, setSeleccion] = useState([]);
+export default function CuestionarioMultiple({ opciones, currentValue, onChange }) {
+  const seleccionadas = currentValue ? currentValue.split(", ") : [];
 
-  const toggle = (id) => {
-    setSeleccion(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
+  const handleToggle = (descripcion) => {
+    let nuevasSeleccionadas;
+    if (seleccionadas.includes(descripcion)) {
+      nuevasSeleccionadas = seleccionadas.filter(item => item !== descripcion);
+    } else {
+      nuevasSeleccionadas = [...seleccionadas, descripcion];
+    }
+    onChange(nuevasSeleccionadas.join(", "));
   };
 
   return (
-    <div>
-      {opciones.map(op => (
-        <label key={op.idopcion}>
-          <input
-            type="checkbox"
-            onChange={() => toggle(op.idopcion)}
-          />
-          {op.descripcion}
-        </label>
+    <div className="opciones-grid">
+      {opciones.map((opt) => (
+        <div 
+          key={opt.idopcion} 
+          className={`opcion-card ${seleccionadas.includes(opt.descripcion) ? 'activa' : ''}`}
+          onClick={() => handleToggle(opt.descripcion)}
+        >
+          <span className="check-texto">{opt.descripcion}</span>
+        </div>
       ))}
-
-      <button onClick={() => onNext(seleccion)}>Siguiente</button>
     </div>
   );
 }

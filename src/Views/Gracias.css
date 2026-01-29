@@ -17,7 +17,7 @@
 .check-icon-container {
   width: 80px;
   height: 80px;
-  background-color: #E2DC00;
+  background-color: #1FB436;
   border-radius: 50%;
   display: flex;
   justify-content: center;
@@ -32,7 +32,7 @@
 }
 
 .gracias-titulo {
-  color: #E2DC00;
+  color: #1FB436;
   font-size: 3rem;
   margin: 0;
   font-weight: 500;

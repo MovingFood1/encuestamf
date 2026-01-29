@@ -1,5 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./Views/Home";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import UserEntry from "./Views/UserEntry";
 import SurveyView from "./Views/SurveyView";
 import Gracias from "./Views/Gracias";
@@ -8,16 +7,16 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* 1. La puerta de entrada principal con el sistema de PIN */}
-        <Route path="/" element={<Home />} />
+        {/* Redirección automática: Si alguien entra a la raíz (/), 
+            puedes mandarlo a una página de error o a la de vendedores por defecto */}
+        <Route path="/" element={<Navigate to="/encuesta/vendedor" />} />
 
-        {/* 2. Pantalla de selección de nombre (Vendedor u Operario) */}
+        {/* Pantalla de selección de nombre para Vendedores */}
         <Route path="/encuesta/:idEncuesta" element={<UserEntry />} />
         
-        {/* 3. El cuestionario dinámico según la categoría */}
+        {/* Cuestionario Directo (El que usará Diego) */}
         <Route path="/cuestionario/:idEncuesta/:idVendedor" element={<SurveyView />} />
         
-        {/* 4. Pantalla final */}
         <Route path="/gracias" element={<Gracias />} />
       </Routes>
     </BrowserRouter>
