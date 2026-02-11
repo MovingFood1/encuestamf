@@ -7,13 +7,21 @@ export default function CuestionarioFirma({onNext, isProcessing}) {
     const limpiar = () => sigCanvas.current.clear();
 
     const guardar = () => {
-        if (sigCanvas.current.isEmpty()) {
+        if (sigCanvas.current && !sigCanvas.current.isEmpty()) {
+            
+            // 1. EXTRAEMOS LA IMAGEN DIRECTAMENTE
+            const canvas = sigCanvas.current.getCanvas();
+            const dataURL = canvas.toDataURL('image/png');
+            
+            // 2. ENVIAMOS AL PADRE
+            onNext(dataURL);
+            
+            // 3. OPCIONAL: Feedback para el usuario
+            console.log("Firma fijada con éxito");
+        } else {
             alert("Por favor, firma antes de continuar.");
-            return;
         }
-        const dataURL = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
-        onNext(dataURL);
-    }
+    };
 
     return (
         <div className="firma-container">
