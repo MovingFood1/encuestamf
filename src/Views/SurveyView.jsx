@@ -216,7 +216,9 @@ export default function SurveyView() {
       }}
     >
       <div className="cuestionario-container">
-        <h1 className="titulo-encuesta">Registro de Visita</h1>
+        <h1 className="titulo-encuesta">
+          {String(idEncuesta).toLowerCase().includes("operario") ? "Checklist Camión" : "Registro de Visita"}
+        </h1>
         <div className="vendedor-badge">
           {String(idEncuesta).toLowerCase().includes("operario") ? "Operador: " : "Vendedor: "} 
           <strong>{nombreVendedor}</strong>
